@@ -1,4 +1,5 @@
 use crate::util;
+use crate::util::Grid;
 
 
 #[inline]
@@ -38,20 +39,20 @@ fn count_runic_chars(runic: &[Vec<u8>], phrase: &[u8]) -> usize {
     flags.iter().filter(|&&f| f).count()
 }
 
-fn count_runic_circular(runic: &[Vec<u8>], phrases: &[u8], rows: usize, cols: usize) -> usize {
-    let mut grid = vec![false; rows * cols];
+fn count_runic_circular(runic: &[Vec<u8>], phrases: &Grid<u8>, rows: usize, cols: usize) -> usize {
+    let mut grid = Grid::new(rows, cols, false);
     for row in 0 .. rows{
         for col in 0 .. cols{
             for rune in runic {
                 for j in 0..rune.len() {
                     let idx = (col + j) % cols;
-                    if phrases[row * cols + idx] != rune[j] {
+                    if *phrases.get(row, idx) != rune[j] {
                         break;
                     }
                     if j == rune.len() - 1 {
                         for k in 0..rune.len() {
                             let flag_idx = (col + k) % cols;
-                            grid[row * cols + flag_idx] = true;
+                            grid.set(row, flag_idx, true)
                         }
                     }
                 }
@@ -59,28 +60,28 @@ fn count_runic_circular(runic: &[Vec<u8>], phrases: &[u8], rows: usize, cols: us
                     continue;
                 }
                 for j in 0..rune.len() {
-                    if phrases[(row + j) * cols + col] != rune[j] {
+                    if *phrases.get(row + j, col) != rune[j] {
                         break;
                     }
                     if j == rune.len() - 1 {
                         for k in 0..rune.len() {
-                            grid[(row + k) * cols + col] = true;
+                            grid.set(row + k, col, true);
                         }
                     }
                 }
             }
         }
     }
-    grid.iter().filter(|&&f| f).count()
+    grid.data.iter().filter(|&&f| f).count()
 }
 
-fn lines_to_grid(phrases: &Vec<Vec<u8>>) -> (Vec<u8>, usize, usize) {
+fn lines_to_grid(phrases: &Vec<Vec<u8>>) -> (Grid<u8>, usize, usize) {
     let rows = phrases.len();
     let cols = phrases[0].len();
-    let mut grid = vec![0u8; rows * cols];
+    let mut grid = Grid::new(rows, cols, 0u8);
     for row in 0..rows {
         for col in 0..cols {
-            grid[row * cols + col] = phrases[row][col];
+            grid.set(row, col, phrases[row][col]);
         }
     }
     (grid, rows, cols)
