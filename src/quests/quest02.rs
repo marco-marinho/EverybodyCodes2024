@@ -24,7 +24,7 @@ fn get_runic_as_bytes(line: &str) -> Vec<Vec<u8>> {
     forward.chain(backward).collect()
 }
 
-fn count_runnic_chars(runic: &[Vec<u8>], phrase: &[u8]) -> usize {
+fn count_runic_chars(runic: &[Vec<u8>], phrase: &[u8]) -> usize {
     let mut flags = vec![false; phrase.len()];
     for i in 0..phrase.len(){
         for rune in runic {
@@ -38,7 +38,7 @@ fn count_runnic_chars(runic: &[Vec<u8>], phrase: &[u8]) -> usize {
     flags.iter().filter(|&&f| f).count()
 }
 
-fn count_runnic_circular(runic: &[Vec<u8>], phrases: &[u8], rows: usize, cols: usize) -> usize {
+fn count_runic_circular(runic: &[Vec<u8>], phrases: &[u8], rows: usize, cols: usize) -> usize {
     let mut grid = vec![false; rows * cols];
     for row in 0 .. rows{
         for col in 0 .. cols{
@@ -100,7 +100,7 @@ fn part2() -> String {
     let runic= get_runic_as_bytes(&lines[0]);
 
     let total_count = lines.iter()
-                             .map(|line| count_runnic_chars(&runic, line.as_bytes()))
+                             .map(|line| count_runic_chars(&runic, line.as_bytes()))
                              .sum::<usize>();
     total_count.to_string()
 }
@@ -110,7 +110,7 @@ fn part3() -> String {
     let runic= get_runic_as_bytes(&lines[0]);
     let phrases: Vec<Vec<u8>> = lines[2..].iter().map(|line| line.bytes().collect()).collect();
     let (phrases_grid, rows, cols) = lines_to_grid(&phrases);
-    let count_rows = count_runnic_circular(&runic, &phrases_grid, rows, cols);
+    let count_rows = count_runic_circular(&runic, &phrases_grid, rows, cols);
     count_rows.to_string()
 }
 
