@@ -4,7 +4,7 @@ enum Quest02 {
         var flags = [Bool](repeating: false, count: phrase.count)
         for idx in phrase.indices {
             for rune in runic {
-                if phrase[idx...].starts(with: rune){
+                if phrase[idx...].starts(with: rune) {
                     let startIdx = phrase.distance(from: phrase.startIndex, to: idx)
                     let endIdx = startIdx + rune.count - 1
                     for i in startIdx...endIdx {
@@ -13,11 +13,11 @@ enum Quest02 {
                 }
             }
         }
-        return flags.filter{ $0 }.count
+        return flags.filter { $0 }.count
     }
 
     private static func countRunicCylindrical(grid: [[Character]], runic: [String]) -> Int {
-        let rows = grid.count 
+        let rows = grid.count
         let cols = grid[0].count
         var flags = [[Bool]](repeating: [Bool](repeating: false, count: cols), count: rows)
         let runicChars = runic.map { Array($0) }
@@ -53,43 +53,43 @@ enum Quest02 {
                 }
             }
         }
-        return flags.map { $0.filter{ $0 }.count }.reduce(0, +)
+        return flags.map { $0.filter { $0 }.count }.reduce(0, +)
     }
 
     private static func appendReversed(parts: [Substring.SubSequence]) -> [String] {
         var runic = [String]()
-        for part in parts {runic.append(String(part))}
-        for part in parts {runic.append(String(part.reversed()))}
+        for part in parts { runic.append(String(part)) }
+        for part in parts { runic.append(String(part.reversed())) }
         return runic
     }
 
-    private static func part1(){
+    private static func part1() {
         let input = readInputLines(quest: 2, part: 1)
         let runic = input[0].split(separator: ":")[1].split(separator: ",")
         let phrase = input[2]
-        var count = 0;
+        var count = 0
         for idx in phrase.indices {
             for rune in runic {
-                if phrase[idx...].starts(with: rune){
-                    count += 1    
+                if phrase[idx...].starts(with: rune) {
+                    count += 1
                 }
             }
         }
         print(count)
     }
 
-    private static func part2(){
+    private static func part2() {
         let input = readInputLines(quest: 2, part: 2)
         let phrases = input[2...]
         let parts = input[0].split(separator: ":")[1].split(separator: ",")
         let runic = appendReversed(parts: parts)
         let result = phrases.reduce(0) { partialResult, phrase in
             partialResult + countRunic(phrase: String(phrase), runic: runic)
-        } 
+        }
         print(result)
     }
 
-    private static func part3(){
+    private static func part3() {
         let input = readInputLines(quest: 2, part: 3)
         let phrases = input[2...]
         let parts = input[0].split(separator: ":")[1].split(separator: ",")
@@ -99,13 +99,12 @@ enum Quest02 {
         print(result)
     }
 
-
     static func solve(part: Int) {
         switch part {
-            case 1: part1()
-            case 2: part2()
-            case 3: part3()
-            default: print("Part \(part) not implemented yet.")
+        case 1: part1()
+        case 2: part2()
+        case 3: part3()
+        default: print("Part \(part) not implemented yet.")
         }
     }
 }
