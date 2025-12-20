@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: '3'
+
+tasks:
+  run:
+    desc: Run a specific quest and part
+    cmds:
+      - swift run -- ec2024 {{.CLI_ARGS}}
