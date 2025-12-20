@@ -25,6 +25,40 @@ enum Quest07 {
         return top + right + bottom + left
     }
 
+    private static func parseTrackBS(input: [String]) -> [String] {
+        let grid = input.map { Array($0) }
+        var output = [String]()
+        var row = 0
+        var col = 1
+        var visted = Set<IntPair>([IntPair(x: 0, y: 0)])
+        while true {
+            let current = String(grid[row][col])
+            output.append(current)
+            visted.insert(IntPair(x: row, y: col))
+            if row - 1 >= 0 && !visted.contains(IntPair(x: row - 1, y: col))
+                && grid[row - 1][col] != " "
+            {
+                row -= 1
+            } else if row + 1 < grid.count && !visted.contains(IntPair(x: row + 1, y: col))
+                && grid[row + 1][col] != " "
+            {
+                row += 1
+            } else if col - 1 >= 0 && !visted.contains(IntPair(x: row, y: col - 1))
+                && grid[row][col - 1] != " "
+            {
+                col -= 1
+            } else if col + 1 < grid[0].count && !visted.contains(IntPair(x: row, y: col + 1))
+                && grid[row][col + 1] != " "
+            {
+                col += 1
+            } else {
+                break
+            }
+        }
+        output.append("S")
+        return output
+    }
+
     private static func executePlan(plan: [String], track: [String], steps: Int) -> Int {
         var result = 0
         var current = 10
@@ -69,6 +103,17 @@ enum Quest07 {
     }
 
     private static func part3() {
+        let input = readInputLines(quest: 7, part: 3)
+        let halves = input.split(separator: "")
+        let plans = parse(input: Array(halves[0]))
+        let track = parseTrackBS(input: Array(halves[1]))
+        let other_guy = executePlan(plan: plans["A"]!, track: track, steps: track.count * 11)
+        let possible_plans = uniquePermutations(["+": 5, "-": 3, "=": 3])
+        let possible_results = possible_plans.map {
+            executePlan(plan: $0, track: track, steps: track.count * 11)
+        }
+        let valid_results = possible_results.filter { $0 > other_guy }
+        print(valid_results.count)
     }
 
     static func solve(part: Int) {

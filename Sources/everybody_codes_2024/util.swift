@@ -17,12 +17,43 @@ func readInputLines(quest: Int, part: Int) -> [String] {
     return input.components(separatedBy: .newlines)
 }
 
+struct IntPair: Hashable {
+    let x: Int
+    let y: Int
+}
+
 extension Array {
-    // Return an array of Slices (Views), not Arrays (Copies)
     func chunked(into size: Int) -> [ArraySlice<Element>] {
         return stride(from: 0, to: count, by: size).map {
-            // Just return the slice directly. No allocation of element data.
             self[$0..<Swift.min($0 + size, count)]
         }
     }
+}
+
+func uniquePermutations<T: Hashable>(_ elements: [T: Int]) -> [[T]] {
+    var result: [[T]] = []
+    var current: [T] = []
+    var counts = elements
+
+    func backtrack() {
+        if current.count == elements.values.reduce(0, +) {
+            result.append(current)
+            return
+        }
+
+        for element in counts.keys {
+            if counts[element]! > 0 {
+                current.append(element)
+                counts[element]! -= 1
+
+                backtrack()
+
+                counts[element]! += 1
+                current.removeLast()
+            }
+        }
+    }
+
+    backtrack()
+    return result
 }
