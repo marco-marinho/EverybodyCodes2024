@@ -7,3 +7,8 @@ tasks:
     desc: Run a specific quest and part
     cmds:
       - swift run -- ec2024 {{.CLI_ARGS}}
+
+  release-run:
+    desc: Run a specific quest and part in release mode
+    cmds:
+      - swift run -c release -- ec2024 {{.CLI_ARGS}}

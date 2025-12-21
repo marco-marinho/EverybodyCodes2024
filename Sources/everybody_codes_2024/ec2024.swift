@@ -23,6 +23,7 @@ struct EC2024 {
         case 6: Quest06.solve(part: part)
         case 7: Quest07.solve(part: part)
         case 8: Quest08.solve(part: part)
+        case 9: Quest09.solve(part: part)
         default: print("Quest \(quest) not implemented yet.")
         }
     }
