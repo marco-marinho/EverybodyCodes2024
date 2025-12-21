@@ -17,6 +17,9 @@ enum Quest09 {
         if value == 0 {
             return 0
         }
+        if idx == factors.count - 1 {
+            return value
+        }
         if idx >= factors.count {
             return Int.max / 2
         }
