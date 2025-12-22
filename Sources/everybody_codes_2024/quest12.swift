@@ -2,6 +2,44 @@ import Algorithms
 
 enum Quest12 {
 
+    private static func findIntercept(start: (Int, Int), captapult: Character) -> (Int, Int) {
+        let yOffset =
+            switch captapult {
+            case "A": 0
+            case "B": 1
+            case "C": 2
+            default: fatalError("Unknown catapult type \(captapult)")
+            }
+        let x = start.0 / 2
+        let y = start.1 - (start.0 - x) - yOffset
+        return (x, y)
+    }
+
+    private static func bestPower(intercept: (Int, Int)) -> Int {
+        let (x, y) = intercept
+        if x == y {
+            return x
+        }
+        if y <= x && x <= 2 * y {
+            return y
+        }
+        if (x + y) % 3 == 0 && y <= x {
+            return (x + y) / 3
+        }
+        return Int.max / 4
+    }
+
+    private static func optimalScore(start: (Int, Int)) -> Int {
+        let powers = ["A", "B", "C"].map { findIntercept(start: start, captapult: $0) }.map {
+            bestPower(intercept: $0)
+        }
+        let scores = zip(["A", "B", "C"], powers).map {
+            (catId, power) in
+            return calcScore(hit: (catId, "T", power))
+        }
+        return scores.min() ?? Int.max
+    }
+
     private static func calcScore(hit: (Character, Character, Int)) -> Int {
         let (catId, tgtId, power) = hit
         let catMultiplier =
@@ -67,6 +105,9 @@ enum Quest12 {
     }
 
     private static func part3() {
+        let meteors = readInputLines(quest: 12, part: 3).map { $0.split(separator: " ") }
+            .map { (Int($0[0])!, Int($0[1])!) }
+        print(meteors.map { optimalScore(start: $0) }.reduce(0, +))
     }
 
     static func solve(part: Int) {
