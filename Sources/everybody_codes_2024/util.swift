@@ -22,14 +22,6 @@ struct IntPair: Hashable {
     let y: Int
 }
 
-extension Array {
-    func chunked(into size: Int) -> [ArraySlice<Element>] {
-        return stride(from: 0, to: count, by: size).map {
-            self[$0..<Swift.min($0 + size, count)]
-        }
-    }
-}
-
 func uniquePermutations<T: Hashable>(_ elements: [T: Int]) -> [[T]] {
     var result: [[T]] = []
     var current: [T] = []

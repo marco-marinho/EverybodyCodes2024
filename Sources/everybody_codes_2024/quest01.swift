@@ -18,21 +18,21 @@ enum Quest01 {
     private static func part1() {
         let input = readInput(quest: 1, part: 1)
         let monsters = Array(input)
-        let total = monsters.chunked(into: 1).map { calculateBlock($0) }.reduce(0, +)
+        let total = monsters.chunks(ofCount: 1).map { calculateBlock($0) }.reduce(0, +)
         print(total)
     }
 
     private static func part2() {
         let input = readInput(quest: 1, part: 2)
         let monsters = Array(input)
-        let total = monsters.chunked(into: 2).map { calculateBlock($0) }.reduce(0, +)
+        let total = monsters.chunks(ofCount: 2).map { calculateBlock($0) }.reduce(0, +)
         print(total)
     }
 
     private static func part3() {
         let input = readInput(quest: 1, part: 3)
         let monsters = Array(input)
-        let total = monsters.chunked(into: 3).map { calculateBlock($0) }.reduce(0, +)
+        let total = monsters.chunks(ofCount: 3).map { calculateBlock($0) }.reduce(0, +)
         print(total)
     }
 
