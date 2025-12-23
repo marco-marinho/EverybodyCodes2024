@@ -32,9 +32,7 @@ enum Quest13 {
     private static func cellCost(from: Character, to: Character) -> Int {
         let fromHeight = cellHeight(cell: from)
         let toHeight = cellHeight(cell: to)
-        return min(
-            abs(toHeight - fromHeight), (toHeight - fromHeight + 10) % 10,
-            (fromHeight - toHeight + 10) % 10)
+        return min((toHeight - fromHeight + 10) % 10, (fromHeight - toHeight + 10) % 10)
     }
 
     private static func djikstra(grid: [[Character]], start: (Int, Int), end: Character) -> Int {
