@@ -12,7 +12,7 @@ enum Quest15 {
     private struct MemoKey: Hashable {
         let x: Int
         let y: Int
-        let available: String
+        let available: [Character]
     }
 
     private struct Node: Comparable {
@@ -87,7 +87,7 @@ enum Quest15 {
     ) -> Int {
         let (currentChar, currentPos) = current
         if let cached = memo[
-            MemoKey(x: currentPos.0, y: currentPos.1, available: String(available.sorted()))]
+            MemoKey(x: currentPos.0, y: currentPos.1, available: available)]
         {
             return cached
         }
@@ -97,6 +97,7 @@ enum Quest15 {
         var minCost = Int.max
         for next in available.isEmpty ? ["S"] : available {
             let possiblePoisitions = locations[next]!
+            let nextAvailable = available.filter { $0 != next }.sorted()
             for position in possiblePoisitions {
                 let possibleCost = costs[
                     CacheKey(
@@ -107,12 +108,12 @@ enum Quest15 {
                     + dfs(
                         costs: costs, locations: locations,
                         current: (next, position),
-                        available: available.filter { $0 != next },
+                        available: nextAvailable,
                         memo: &memo)
                 minCost = min(minCost, newCost)
             }
         }
-        memo[MemoKey(x: currentPos.0, y: currentPos.1, available: String(available.sorted()))] =
+        memo[MemoKey(x: currentPos.0, y: currentPos.1, available: available)] =
             minCost
         return minCost
     }
