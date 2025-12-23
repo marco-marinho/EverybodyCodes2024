@@ -73,7 +73,7 @@ enum Quest14 {
     }
 
     private static func bfs(
-        grid: Set<Coordinate3D>, start: Coordinate3D, solutionLength: Int
+        grid: borrowing Set<Coordinate3D>, start: Coordinate3D, solutionLength: Int
     )
         -> [Int: Node]
     {
@@ -108,7 +108,7 @@ enum Quest14 {
                 queue.append(newNode)
             }
         }
-        return solutions
+        fatalError("Could not find all solutions")
     }
 
     private static func part1() {

@@ -1,6 +1,6 @@
 import Collections
 
-enum Quest13 {
+enum Quest15 {
 
     private struct Node: Comparable {
         let position: IntPair
@@ -17,25 +17,7 @@ enum Quest13 {
         var pair: IntPair { IntPair(x: position.x, y: position.y) }
     }
 
-    private static func cellHeight(cell: Character) -> Int {
-        switch cell {
-        case "S": return 0
-        case "E": return 0
-        case let c where c.isNumber:
-            return Int(c.asciiValue! - Character("0").asciiValue!)
-        default:
-            fatalError("Unknown cell type \(cell)")
-        }
-
-    }
-
-    private static func cellCost(from: Character, to: Character) -> Int {
-        let fromHeight = cellHeight(cell: from)
-        let toHeight = cellHeight(cell: to)
-        return min((toHeight - fromHeight + 10) % 10, (fromHeight - toHeight + 10) % 10)
-    }
-
-    private static func djikstra(grid: borrowing [[Character]], start: (Int, Int), end: Character)
+    private static func djikstra(grid: borrowing [[Character]], start: (Int, Int), end: (Int, Int))
         -> Int
     {
         var queue = Heap<Node>()
@@ -44,8 +26,7 @@ enum Quest13 {
         while !queue.isEmpty {
             let current = queue.popMin()!
             let (x, y) = (current.position.x, current.position.y)
-            let currentCell = grid[x][y]
-            if currentCell == end {
+            if (x, y) == end {
                 return current.cost
             }
             if visited.contains(current.pair) {
@@ -61,45 +42,36 @@ enum Quest13 {
                 }
                 let nextCell = grid[newX][newY]
                 let nextPair = IntPair(x: newX, y: newY)
-                if nextCell == "#" || visited.contains(nextPair) {
+                if nextCell == "#" || nextCell == "~" || visited.contains(nextPair) {
                     continue
                 }
-                let moveCost = cellCost(from: currentCell, to: nextCell) + 1
                 let newNode = Node(
-                    position: nextPair, cost: current.cost + moveCost)
+                    position: nextPair, cost: current.cost + 1)
                 queue.insert(newNode)
             }
         }
         return Int.max
     }
 
-    private static func findElement(element: Character, in grid: [[Character]]) -> (Int, Int)? {
+    private static func part1() {
+        let grid = readInputLines(quest: 15, part: 1).map { Array($0) }
+        let start = (0, grid[0].firstIndex(of: ".")!)
+        var targets = [(Int, Int)]()
         for (i, row) in grid.enumerated() {
             for (j, cell) in row.enumerated() {
-                if cell == element {
-                    return (i, j)
+                if cell == "H" {
+                    targets.append((i, j))
                 }
             }
         }
-        return nil
-    }
-
-    private static func part1() {
-        let grid = readInputLines(quest: 13, part: 1).map { Array($0) }
-        let start = findElement(element: "S", in: grid)!
-        print(djikstra(grid: grid, start: start, end: "E"))
+        let costs = targets.map { djikstra(grid: grid, start: start, end: $0) }
+        print(costs.min()! * 2)
     }
 
     private static func part2() {
-        let grid = readInputLines(quest: 13, part: 2).map { Array($0) }
-        let start = findElement(element: "S", in: grid)!
-        print(djikstra(grid: grid, start: start, end: "E"))
     }
 
     private static func part3() {
-        let grid = readInputLines(quest: 13, part: 3).map { Array($0) }
-        let start = findElement(element: "E", in: grid)!
-        print(djikstra(grid: grid, start: start, end: "S"))
     }
 
     static func solve(part: Int) {
@@ -110,4 +82,5 @@ enum Quest13 {
         default: print("Part \(part) not implemented yet.")
         }
     }
+
 }
