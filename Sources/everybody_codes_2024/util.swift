@@ -49,3 +49,17 @@ func uniquePermutations<T: Hashable>(_ elements: [T: Int]) -> [[T]] {
     backtrack()
     return result
 }
+
+func findOccurences(grid: borrowing [[Character]], target: Character)
+    -> [(Int, Int)]
+{
+    var positions = [(Int, Int)]()
+    for (i, row) in grid.enumerated() {
+        for (j, cell) in row.enumerated() {
+            if cell == target {
+                positions.append((i, j))
+            }
+        }
+    }
+    return positions
+}

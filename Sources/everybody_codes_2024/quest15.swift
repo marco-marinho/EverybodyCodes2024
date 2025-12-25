@@ -30,20 +30,6 @@ enum Quest15 {
         var pair: IntPair { IntPair(x: position.x, y: position.y) }
     }
 
-    private static func findOccurences(grid: borrowing [[Character]], target: Character)
-        -> [(Int, Int)]
-    {
-        var positions = [(Int, Int)]()
-        for (i, row) in grid.enumerated() {
-            for (j, cell) in row.enumerated() {
-                if cell == target {
-                    positions.append((i, j))
-                }
-            }
-        }
-        return positions
-    }
-
     private static func djikstra(grid: borrowing [[Character]], start: (Int, Int), end: (Int, Int))
         -> Int
     {
