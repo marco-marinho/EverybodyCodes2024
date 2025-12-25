@@ -2,6 +2,7 @@ import Collections
 
 enum Quest17 {
 
+    @inline(__always)
     private static func setFirst(_ array: inout [Bool]) -> Int {
         for (index, value) in array.enumerated() {
             if !value {
