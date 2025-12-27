@@ -33,25 +33,27 @@ enum Quest19 {
         }
     }
 
-    private static func executeCommands<T>(grid: inout [[T]], commands: [Character]) {
+    private static func executeCommands<T>(grid: [[T]], commands: [Character]) -> [[T]] {
+        var output = grid
         var pivot = (1, 1)
         var commandIndex = 0
-        while pivot.0 < grid.count - 1 {
-            rotate(&grid, commands[commandIndex % commands.count], pivot)
+        while pivot.0 < output.count - 1 {
+            rotate(&output, commands[commandIndex % commands.count], pivot)
             commandIndex += 1
-            if pivot.1 < grid[0].count - 2 {
+            if pivot.1 < output[0].count - 2 {
                 pivot.1 += 1
             } else {
                 pivot.1 = 1
                 pivot.0 += 1
             }
         }
+        return output
     }
 
     private static func transform<T>(grid: [[T]], mapping: [[(Int, Int)]]) -> [[T]] {
         var newGrid = grid
-        for i in 0..<grid.count {
-            for j in 0..<grid[0].count {
+        for i in 0..<newGrid.count {
+            for j in 0..<newGrid[0].count {
                 let (newI, newJ) = mapping[i][j]
                 newGrid[i][j] = grid[newI][newJ]
             }
@@ -62,9 +64,9 @@ enum Quest19 {
     private static func part1() {
         let input = readInputLines(quest: 19, part: 1)
         let commands = Array(input[0])
-        var grid = input[2...].map { Array($0) }
-        executeCommands(grid: &grid, commands: commands)
-        for row in grid {
+        let grid = input[2...].map { Array($0) }
+        let result = executeCommands(grid: grid, commands: commands)
+        for row in result {
             print(String(row))
         }
     }
@@ -72,11 +74,12 @@ enum Quest19 {
     private static func part2() {
         let input = readInputLines(quest: 19, part: 2)
         let commands = Array(input[0])
-        var grid = input[2...].map { Array($0) }
+        let grid = input[2...].map { Array($0) }
+        var current = grid
         for _ in 0..<100 {
-            executeCommands(grid: &grid, commands: commands)
+            current = executeCommands(grid: current, commands: commands)
         }
-        for row in grid {
+        for row in current {
             print(String(row))
         }
     }
@@ -86,30 +89,24 @@ enum Quest19 {
         let commands = Array(input[0])
         let target = 1_048_576_000
         let grid = input[2...].map { Array($0) }
-        let originalGrid = grid.indexed().map { (i, row) in
+        let identityMapping = grid.indexed().map { (i, row) in
             row.indexed().map { (j, _) in
                 (Int(i), Int(j))
             }
         }
-        var rotations = [[[(Int, Int)]]]()
 
-        var firstTransform = originalGrid
-        executeCommands(grid: &firstTransform, commands: commands)
-        rotations.append(firstTransform)
-        for _ in 1...30 {
-            let currentTransform = transform(grid: rotations.last!, mapping: rotations.last!)
-            rotations.append(currentTransform)
-        }
-
-        var current = originalGrid
-        var left = target
-        for k in (0..<30).reversed() {
-            if left >= (1 << k) {
-                current = transform(grid: current, mapping: rotations[k])
-                left -= (1 << k)
+        var remaining = target
+        var currentMapping = identityMapping
+        var powerOfTwoMapping = executeCommands(grid: identityMapping, commands: commands)
+        while remaining > 0 {
+            if remaining & 1 == 1 {
+                currentMapping = transform(grid: currentMapping, mapping: powerOfTwoMapping)
             }
+            powerOfTwoMapping = transform(grid: powerOfTwoMapping, mapping: powerOfTwoMapping)
+            remaining >>= 1
         }
-        let finalGrid = transform(grid: grid, mapping: current)
+
+        let finalGrid = transform(grid: grid, mapping: currentMapping)
         for row in finalGrid {
             print(String(row))
         }

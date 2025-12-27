@@ -34,6 +34,7 @@ struct EC2024 {
         case 17: Quest17.solve(part: part)
         case 18: Quest18.solve(part: part)
         case 19: Quest19.solve(part: part)
+        case 20: Quest20.solve(part: part)
         default: print("Quest \(quest) not implemented yet.")
         }
     }
